@@ -13,7 +13,8 @@ const translations = {
     summaryOwes: "debe en total",
     summaryReceives: "recibe en total",
     placeholderName: "Nombre",
-    placeholderPaid: "Pago"
+    placeholderPaid: "Pago",
+    summaryTitle: "Resumen"
   },
   pt: {
     title: "Divisão de Despesas",
@@ -27,7 +28,8 @@ const translations = {
     summaryOwes: "deve no total",
     summaryReceives: "recebe no total",
     placeholderName: "Nome",
-    placeholderPaid: "Pagamento"
+    placeholderPaid: "Pagamento",
+    summaryTitle: "Resumo"
   }
 };
 
@@ -40,7 +42,6 @@ function toggleLanguage() {
   document.getElementById("calcBtn").innerText = translations[currentLang].calc;
   document.getElementById("langBtn").innerText = translations[currentLang].lang;
 
-  // actualizar placeholders existentes
   document.querySelectorAll(".person").forEach(p => {
     p.querySelector("input[type=text]").placeholder = translations[currentLang].placeholderName;
     p.querySelector("input[type=number]").placeholder = translations[currentLang].placeholderPaid;
@@ -91,7 +92,7 @@ function calculate() {
     });
   });
 
-  result += `<h3>Resumen</h3>`;
+  result += `<h3>${translations[currentLang].summaryTitle}</h3>`;
   persons.forEach(p => {
     if (p.owesTotal > 0) {
       result += `<p>${p.name} ${translations[currentLang].summaryOwes} $${p.owesTotal.toFixed(2)}</p>`;
@@ -102,3 +103,4 @@ function calculate() {
 
   document.getElementById("result").innerHTML = result;
 }
+
