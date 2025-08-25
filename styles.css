@@ -18,16 +18,23 @@ h1 {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-sizing: border-box; /* 🔑 asegura que padding no desborde */
 }
 
 .person {
   display: flex;
+  flex-wrap: wrap; /* 🔑 permite que los inputs bajen si no entran */
   gap: 10px;
   margin-bottom: 10px;
 }
 
+.person input {
+  flex: 1 1 45%; /* 🔑 ancho flexible, mínimo 45% */
+  min-width: 120px; /* nunca más chico que esto */
+  box-sizing: border-box;
+}
+
 input[type="text"], input[type="number"] {
-  flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -68,12 +75,11 @@ button:hover {
   }
 
   .person {
-    flex-direction: column;
+    flex-direction: column; /* 🔑 en pantallas chicas se apilan */
   }
 
-  input[type="text"], input[type="number"] {
-    width: 100%;
-    font-size: 0.95rem;
+  .person input {
+    width: 100%; /* ocupan todo el ancho */
   }
 
   button {
@@ -90,3 +96,4 @@ button:hover {
     font-size: 0.95rem;
   }
 }
+
