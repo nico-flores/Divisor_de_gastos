@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>División de Gastos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .person {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    input[type="text"], input[type="number"] {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 10px;
+      background: #eef;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">División de Gastos</h1>
+    <div id="people"></div>
+    <button onclick="addPerson()" id="addBtn">Agregar Persona</button>
+    <button onclick="calculate()" id="calcBtn">Pagar/Dividir</button>
+    <button onclick="toggleLanguage()" id="langBtn">🌐 Português</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const peopleContainer = document.getElementById("people");
+
+    const translations = {
+      es: {
+        title: "División de Gastos",
+        add: "Agregar Persona",
+        calc: "Pagar/Dividir",
+        lang: "🌐 Português",
+        total: "Total",
+        share: "Cada uno debe pagar",
+        owes: "debe pagar",
+        to: "a",
+        summaryOwes: "debe en total",
+        summaryReceives: "recibe en total"
+      },
+      pt: {
+        title: "Divisão de Despesas",
+        add: "Adicionar Pessoa",
+        calc: "Pagar/Dividir",
+        lang: "🌐 Español",
+        total: "Total",
+        share: "Cada um deve pagar",
+        owes: "deve pagar",
+        to: "a",
+        summaryOwes: "deve no total",
+        summaryReceives: "recebe no total"
+      }
+    };
+
+    let currentLang = "es";
+
+    function toggleLanguage() {
+      currentLang = currentLang === "es" ? "pt" : "es";
+      document.getElementById("title").innerText = translations[currentLang].title;
+      document.getElementById("addBtn").innerText = translations[currentLang].add;
+      document.getElementById("calcBtn").innerText = translations[currentLang].calc;
+      document.getElementById("langBtn").innerText = translations[currentLang].lang;
+    }
+
+    function addPerson() {
+      const div = document.createElement("div");
+      div.classList.add("person");
+      div.innerHTML = `
+        <input type="text" placeholder="Nombre">
+        <input type="number" placeholder="Pago" min="0">
+      `;
+      peopleContainer.appendChild(div);
+    }
+
+    function calculate() {
+      const persons = [...document.querySelectorAll(".person")].map(p => {
+        return {
+          name: p.querySelector("input[type=text]").value || "Anon",
+          paid: parseFloat(p.querySelector("input[type=number]").value) || 0,
+          owesTotal: 0,
+          receivesTotal: 0
+        };
+      });
+
+      const total = persons.reduce((sum, p) => sum + p.paid, 0);
+      const equalShare = total / persons.length;
+
+      let debtors = persons.filter(p => p.paid < equalShare);
+      let creditors = persons.filter(p => p.paid > equalShare);
+
+      let result = `<h3>${translations[currentLang].total}: $${total.toFixed(2)}</h3>`;
+      result += `<p>${translations[currentLang].share}: $${equalShare.toFixed(2)}</p>`;
+
+      debtors.forEach(d => {
+        let debt = equalShare - d.paid;
+        creditors.forEach(c => {
+          if (debt > 0 && c.paid > equalShare) {
+            let credit = c.paid - equalShare;
+            let transfer = Math.min(debt, credit);
+            debt -= transfer;
+            c.paid -= transfer;
+            d.owesTotal += transfer;
+            c.receivesTotal += transfer;
+            result += `<p>${d.name} ${translations[currentLang].owes} $${transfer.toFixed(2)} ${translations[currentLang].to} ${c.name}</p>`;
+          }
+        });
+      });
+
+      result += `<h3>Resumen</h3>`;
+      persons.forEach(p => {
+        if (p.owesTotal > 0) {
+          result += `<p>${p.name} ${translations[currentLang].summaryOwes} $${p.owesTotal.toFixed(2)}</p>`;
+        } else if (p.receivesTotal > 0) {
+          result += `<p>${p.name} ${translations[currentLang].summaryReceives} $${p.receivesTotal.toFixed(2)}</p>`;
+        }
+      });
+
+      document.getElementById("result").innerHTML = result;
+    }
+  </script>
+</body>
+</html>
