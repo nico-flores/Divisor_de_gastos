@@ -18,23 +18,20 @@ h1 {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  box-sizing: border-box; /* 🔑 asegura que padding no desborde */
+  box-sizing: border-box;
 }
 
 .person {
   display: flex;
-  flex-wrap: wrap; /* 🔑 permite que los inputs bajen si no entran */
+  flex-wrap: wrap; /* permite que bajen si no entran */
   gap: 10px;
   margin-bottom: 10px;
 }
 
 .person input {
-  flex: 1 1 45%; /* 🔑 ancho flexible, mínimo 45% */
-  min-width: 120px; /* nunca más chico que esto */
+  flex: 1 1 48%;  /* 2 inputs lado a lado */
+  max-width: 100%; /* nunca se pasan del container */
   box-sizing: border-box;
-}
-
-input[type="text"], input[type="number"] {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -51,6 +48,8 @@ button {
   margin: 5px 2px;
   font-size: 1rem;
   transition: 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 button:hover {
@@ -64,28 +63,15 @@ button:hover {
   border-radius: 5px;
 }
 
-/* 📱 Responsive para móviles */
+/* 📱 Responsive */
 @media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  .container {
-    padding: 15px;
-  }
-
   .person {
-    flex-direction: column; /* 🔑 en pantallas chicas se apilan */
+    flex-direction: column;
   }
 
   .person input {
-    width: 100%; /* ocupan todo el ancho */
-  }
-
-  button {
+    flex: 1 1 100%;
     width: 100%;
-    font-size: 1rem;
-    padding: 12px;
   }
 
   h1 {
@@ -96,4 +82,5 @@ button:hover {
     font-size: 0.95rem;
   }
 }
+
 
